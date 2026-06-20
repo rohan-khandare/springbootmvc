@@ -1,14 +1,12 @@
 package com.code.rohan.module2.mvc.controllers;
 
 import com.code.rohan.module2.mvc.dto.EmployeeDTO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
 @RestController
+@RequestMapping(path = "/employees") //base path
 public class EmployeeController {
 
 //    @GetMapping(path = "/getSecretMessage")
@@ -16,12 +14,16 @@ public class EmployeeController {
 //        return "Secret msg: hfb90wtq85";
 //    }
 
-    @GetMapping(path = "/employee/{employeeId}")
-    public EmployeeDTO getEmployeeById(@PathVariable Long employeeId){
-        return new EmployeeDTO(employeeId,"rohan","rohanb2@gmail.com",21, LocalDate.of(2026,7,3),true);
+    @GetMapping(path = "/{employeeId}")
+    public EmployeeDTO getEmployeeById(@PathVariable(name = "employeeId") Long id){
+
+        return new EmployeeDTO(id,"rohan","rohanb2@gmail.com",21, LocalDate.of(2026,7,3),true);
+
+        // if we don't wanna use Path variable name as same everywhere we name it to simple one
+        // by @PathVariable(name = "employeeId") Long id ,now id is employeeId
     }
 
-    @GetMapping(path = "/employees")
+    @GetMapping
     public String getEmployee(@RequestParam Integer age,
                               @RequestParam(required = false) String sortBy){
 
@@ -30,6 +32,28 @@ public class EmployeeController {
         // in this case age is mandatory and sortBy is optional
 
             return "age is : " + age + sortBy;
+    }
+
+    @PostMapping
+    public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO inputEmployee){
+//        @RequestBody will map json data in body of req to employee obj as per the available and rest as null automatically
+        inputEmployee.setId(31L);
+        return inputEmployee;
+    }
+
+    @PutMapping
+    public String updateEmployee(){
+        return "hello from put ";
+    }
+
+    @PatchMapping
+    public String updateSomePartOfEmployee(){
+        return "hello from patch";
+    }
+
+    @DeleteMapping
+    public String DeleteEmployee(){
+        return "Employee Deleted";
     }
 
 }
