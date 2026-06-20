@@ -21,9 +21,15 @@ public class EmployeeController {
         return new EmployeeDTO(employeeId,"rohan","rohanb2@gmail.com",21, LocalDate.of(2026,7,3),true);
     }
 
-    @GetMapping(path = "/employee")
-    public String getEmployee(@RequestParam Integer age){
-            return "age is : " + age;
+    @GetMapping(path = "/employees")
+    public String getEmployee(@RequestParam Integer age,
+                              @RequestParam(required = false) String sortBy){
+
+        //we can use multiple @RequestParam it will inject automatically to function from path is available
+        // @RequestParam is not optional by default to make it optional make required as false
+        // in this case age is mandatory and sortBy is optional
+
+            return "age is : " + age + sortBy;
     }
 
 }
