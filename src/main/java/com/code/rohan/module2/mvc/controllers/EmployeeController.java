@@ -3,6 +3,7 @@ package com.code.rohan.module2.mvc.controllers;
 import com.code.rohan.module2.mvc.dto.EmployeeDTO;
 import com.code.rohan.module2.mvc.entities.EmployeeEntity;
 import com.code.rohan.module2.mvc.repositories.EmployeeRepository;
+import com.code.rohan.module2.mvc.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -18,37 +19,37 @@ public class EmployeeController {
 //    }
 
     // injecting Employee Repository
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
 
     @GetMapping(path = "/{employeeId}")
-    public EmployeeEntity getEmployeeById(@PathVariable(name = "employeeId") Long id){
+    public EmployeeDTO getEmployeeById(@PathVariable(name = "employeeId") Long id){
 
-        return employeeRepository.findById(id).orElse(null);
+        return employeeService.getEmployeeById(id);
         // if we don't wanna use Path variable name as same everywhere we name it to simple one
         // by @PathVariable(name = "employeeId") Long id ,now id is employeeId
     }
 
     @GetMapping
-    public List<EmployeeEntity> getEmployees(@RequestParam(required = false) Integer age,
+    public List<EmployeeDTO> getEmployees(@RequestParam(required = false) Integer age,
                                              @RequestParam(required = false) String sortBy){
 
         //we can use multiple @RequestParam it will inject automatically to function from path is available
         // @RequestParam is not optional by default to make it optional make required as false
         // in this case age is mandatory and sortBy is optional
 
-            return employeeRepository.findAll();
+            return employeeService.findAllEmployees();
     }
 
     @PostMapping
-    public EmployeeEntity createNewEmployee(@RequestBody EmployeeEntity inputEmployee){
+    public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO inputEmployee){
 //        @RequestBody will map JSON data in body of req to employee obj as per the available and rest as null automatically
 
-        return employeeRepository.save(inputEmployee);
+        return employeeService.CreateEmployee(inputEmployee);
     }
 
     @PutMapping
