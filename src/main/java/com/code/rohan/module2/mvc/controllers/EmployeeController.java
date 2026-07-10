@@ -52,9 +52,9 @@ public class EmployeeController {
         return employeeService.CreateEmployee(inputEmployee);
     }
 
-    @PutMapping
-    public String updateEmployee(){
-        return "hello from put ";
+    @PutMapping(path = "/{employeeId}")
+    public EmployeeDTO updateEmployee(@RequestBody EmployeeDTO inputEmployee,@PathVariable(name = "employeeId") Long id){
+        return employeeService.updateEmployee(inputEmployee,id);
     }
 
     @PatchMapping

@@ -42,4 +42,14 @@ public class EmployeeService {
 
         return modelMapper.map(res,EmployeeDTO.class);
     }
+
+    public EmployeeDTO updateEmployee(EmployeeDTO inputEmployee, Long id) {
+
+        EmployeeEntity input = modelMapper.map(inputEmployee,EmployeeEntity.class);
+        input.setId(id);
+        EmployeeEntity res = employeeRepository.save(input);
+
+        return modelMapper.map(res,EmployeeDTO.class);
+
+    }
 }
