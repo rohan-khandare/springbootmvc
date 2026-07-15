@@ -52,4 +52,11 @@ public class EmployeeService {
         return modelMapper.map(res,EmployeeDTO.class);
 
     }
+
+    public String deleteEmployee(long id) {
+        boolean exist = employeeRepository.existsById(id);
+        if(!exist) return "not found";
+        employeeRepository.deleteById(id);
+        return "Deleted successfully";
+    }
 }
