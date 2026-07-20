@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/employees") //base path
@@ -57,9 +58,12 @@ public class EmployeeController {
         return employeeService.updateEmployee(inputEmployee,id);
     }
 
-    @PatchMapping
-    public String updateSomePartOfEmployee(){
-        return "hello from patch";
+    @PatchMapping(path = "/{employeeId}")
+    public EmployeeDTO updateSomePartOfEmployee(
+            @RequestBody Map<String,Object> employeeDTO,
+            @PathVariable(name = "employeeId") long id ){
+
+            return employeeService.updatePartialEmployee(id,employeeDTO);
     }
 
     @DeleteMapping(path = "/{employeeId}")

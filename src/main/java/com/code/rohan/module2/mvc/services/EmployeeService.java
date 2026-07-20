@@ -4,10 +4,13 @@ import com.code.rohan.module2.mvc.dto.EmployeeDTO;
 import com.code.rohan.module2.mvc.entities.EmployeeEntity;
 import com.code.rohan.module2.mvc.repositories.EmployeeRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.theme.CookieThemeResolver;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,10 +56,31 @@ public class EmployeeService {
 
     }
 
+    public  boolean isExistById(long id){
+        return employeeRepository.existsById(id);
+    }
+
     public String deleteEmployee(long id) {
-        boolean exist = employeeRepository.existsById(id);
+        boolean exist = isExistById(id);
         if(!exist) return "not found";
         employeeRepository.deleteById(id);
         return "Deleted successfully";
+    }
+
+    public EmployeeDTO updatePartialEmployee(long id, Map<String, Object> updates) {
+        if(!isExistById(id)) return null;
+
+        EmployeeEntity employeeEntity = employeeRepository.findById(id).get();
+
+        // Reflection is concept in java where we can update any fields of an object
+        updates.forEach((field,value)->{
+            Field fieldTobeUpdated = ReflectionUtils.findRequiredField(EmployeeEntity.class,field);
+            fieldTobeUpdated.setAccessible(true);
+            ReflectionUtils.setField(fieldTobeUpdated,employeeEntity,value);
+            //for each field it finds and set the mapped value to the filed.
+        });
+
+        employeeRepository.save(employeeEntity);
+        return modelMapper.map(employeeEntity,EmployeeDTO.class);
     }
 }
